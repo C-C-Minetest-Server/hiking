@@ -1,5 +1,5 @@
-Hiking signs are common where I come from (not glowing ones, but neither are
-torches.) Missing them in minetest. Not any more! :-)
+Hiking signs are common where I come from Missing them in minetest.
+Not any more! :-)
 
 Signs are applied to rocks, tree trunks, walls. And where there are no objects
 to apply them to, often poles are used to mark the path. (Very useful in
@@ -28,29 +28,65 @@ and:
     more dye  sign  sign
               sign  sign
 
+To craft 2 end signs:
+
+sign sign
+
+Three directional signs of the same colour can be recycled back to basic
+signs when crafting together with a white dye.
+
 
 Poles:
 
-To craft a pole put two sticks above each other:
-
-    stick
-    stick
-
-To craft a pole with sign put either a sign above a pole or above two sticks:
+To craft a sign that can be put on a pole, craft:
 
     sign
-    pole
+    sign
 
-or:
+for a thick pole (cobblestone wall) or for a thin pole (wooden fence) craft:
 
     sign
-    stick
-    stick
+    sign
+    sign
+
+Then put the result onto the pole and it attaches.
+This works only for non-directional signs.
 
 
-Illuminated:
+Sign variants:
 
-Add a torch and you will get a glowing sign. :-)
+Educational path
+
+    sign
+         sign
+
+Local route
+
+    sign sign
+         sign
+
+Branch towards a castle
+
+   sign
+   sign sign
+
+Branch towards a touristic curiosity
+
+         sign
+    sign sign sign
+
+Branch towards a peak
+
+         sign
+         sign
+    sign sign sign
+
+Branch towards a spring
+
+    sign      sign
+         sign
+
+Each variant can be recycled to basic signs.
 
 
 Describe:
