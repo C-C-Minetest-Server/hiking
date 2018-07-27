@@ -83,7 +83,7 @@ Branch towards a peak
 
 Branch towards a spring
 
-    sign      sign
+    sign sign sign
          sign
 
 Each variant can be recycled to basic signs.
