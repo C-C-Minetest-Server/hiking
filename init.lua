@@ -16,6 +16,11 @@ hiking.colours = {
 
 ------------------------------------------------------------------------------------
 
+minetest.register_privilege("hiking", {
+	description = "Allows player to place and remove hiking signs and nodes right next to hiking signs.",
+	give_to_singleplayer = true,
+});
+
 hiking.sign_box = {
 	type = "wallmounted",
 	wall_top    = {-0.4375, 0.4375, -0.3125, 0.4375, 0.5, 0.3125},
@@ -31,51 +36,26 @@ hiking.basic_properties = {
 	is_ground_content = false,
 	walkable = false,
 	node_box = hiking.sign_box,
-	groups = {snappy=1, oddly_breakable_by_hand=2, attached_node=1},
+	groups = {snappy=1, oddly_breakable_by_hand=2, attached_node=1, hiking=1},
 	legacy_wallmounted = true,
-	on_construct = function(pos)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("formspec", "field[text;;${text}]")
-		meta:set_string("infotext", "\"\"")
-	end,
-	on_receive_fields = function(pos, formname, fields, sender)
-		if minetest.is_protected(pos, sender:get_player_name()) then
-			minetest.record_protection_violation(pos, sender:get_player_name())
+	on_place = function(itemstack, placer, pointed_thing)
+		local name = placer:get_player_name()
+		if not name then
 			return
 		end
-		local meta = minetest.get_meta(pos)
-		if not fields.text then return end
-		minetest.log("action", (sender:get_player_name() or "").." wrote \""..fields.text..
-				"\" to sign at "..minetest.pos_to_string(pos))
-		meta:set_string("text", fields.text)
-		meta:set_string("infotext", '"'..fields.text..'"')
+		if minetest.check_player_privs(name, {protection_bypass = true}) or minetest.check_player_privs(name, {hiking = true}) then
+			return minetest.item_place(itemstack, placer, pointed_thing)
+		else
+			minetest.chat_send_player(name, "Missing privilege: hiking")
+			return itemstack
+		end
 	end,
-}
-
-hiking.pole_properties = {
-	drawtype = "nodebox",
-	paramtype = "light",
-	paramtype2 = "wallmounted",
-	sunlight_propagates = true,
-	is_ground_content = false,
-	walkable = false,
-	node_box = {
-		type = "wallmounted",
-		wall_top    = {-0.4375, 0.4375, -0.3125, 0.4375, 0.5, 0.3125},
-		wall_bottom = {-0.4375, -0.5, -0.3125, 0.4375, -0.4375, 0.3125},
-		wall_side   = {-0.5, -0.3125, -0.4375, -0.4375, 0.3125, 0.4375},
-	},
---	groups = {snappy=1, oddly_breakable_by_hand=2, attached_node=1},
-	legacy_wallmounted = true,
-	--sounds = default.node_sound_defaults(),
 	on_construct = function(pos)
-		--local n = minetest.get_node(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", "field[text;;${text}]")
 		meta:set_string("infotext", "\"\"")
 	end,
 	on_receive_fields = function(pos, formname, fields, sender)
-		--print("Sign at "..minetest.pos_to_string(pos).." got "..dump(fields))
 		if minetest.is_protected(pos, sender:get_player_name()) then
 			minetest.record_protection_violation(pos, sender:get_player_name())
 			return
@@ -112,7 +92,7 @@ function hiking.register_sign(colour, style, direction)
 	local inv = hiking.get_texture(colour, style)
 	local inv2 = "hiking_sign_pole.png^" .. inv
 	local desc = firstToUpper(colour.name) .. " " .. style.title
-	local my_groups = {snappy=1, oddly_breakable_by_hand=2, attached_node=1}
+	local my_groups = {snappy=1, oddly_breakable_by_hand=2, attached_node=1, hiking=1}
 	if (direction ~= nil) then
 		desc = desc .. " " .. direction
 		my_groups["hiking_turn_" .. colour.name] = 1
@@ -320,4 +300,48 @@ for _, colour in pairs(hiking.colours) do
 		type = "shapeless",
 		recipe = {gr, gr, gr, hiking.base_material}
 	})
+end
+
+local old_is_protected = minetest.is_protected
+
+minetest.is_protected = function(pos, pname)
+	if old_is_protected(pos, pname) then
+		return true
+	end
+	
+	if minetest.check_player_privs(pname, {protection_bypass = true}) or minetest.check_player_privs(pname, {hiking = true}) then
+		return false
+	end
+	
+	local node = minetest.get_node(pos)
+	if minetest.get_item_group(node.name, "hiking") > 0 then
+		return true
+	end
+
+	node = minetest.get_node({x = pos.x, y = pos.y-1, z = pos.z})
+	if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == 0 then
+		return true
+	end
+	node = minetest.get_node({x = pos.x, y = pos.y+1, z = pos.z})
+	if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == 1 then
+		return true
+	end
+	node = minetest.get_node({x = pos.x-1, y = pos.y, z = pos.z})
+	if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == 2 then
+		return true
+	end
+	node = minetest.get_node({x = pos.x+1, y = pos.y, z = pos.z})
+	if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == 3 then
+		return true
+	end
+	node = minetest.get_node({x = pos.x, y = pos.y, z = pos.z-1})
+	if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == 4 then
+		return true
+	end
+	node = minetest.get_node({x = pos.x, y = pos.y, z = pos.z+1})
+	if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == 5 then
+		return true
+	end
+	
+	return false
 end
