@@ -36,7 +36,7 @@ hiking.basic_properties = {
 	is_ground_content = false,
 	walkable = false,
 	node_box = hiking.sign_box,
-	groups = {snappy=1, oddly_breakable_by_hand=2, attached_node=1, hiking=1},
+	groups = {snappy=1, oddly_breakable_by_hand=2, attached_node=1, nostomp=1, hiking=1},
 	legacy_wallmounted = true,
 	on_place = function(itemstack, placer, pointed_thing)
 		local name = placer:get_player_name()
