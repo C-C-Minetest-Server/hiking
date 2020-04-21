@@ -92,7 +92,7 @@ function hiking.register_sign(colour, style, direction)
 	local inv = hiking.get_texture(colour, style)
 	local inv2 = "hiking_sign_pole.png^" .. inv
 	local desc = firstToUpper(colour.name) .. " " .. style.title
-	local my_groups = {snappy=1, oddly_breakable_by_hand=2, attached_node=1, hiking=1}
+	local my_groups = {snappy=1, oddly_breakable_by_hand=2, attached_node=1, nostomp=1, hiking=1}
 	if (direction ~= nil) then
 		desc = desc .. " " .. direction
 		my_groups["hiking_turn_" .. colour.name] = 1
