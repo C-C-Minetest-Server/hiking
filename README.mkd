@@ -94,6 +94,13 @@ Describe:
 Oh, and by the way, right clicking the sign one can add a path id. Yes, hiking
 trails have an id here.
 
+Privileges:
+
+If you use this mod on a server, only players with the "hiking" privilege will
+be able to place or destroy the signs. This is useful so you don't need to
+create tiny areas around them.
+
+In singleplayer, you will get this privilege automatically.
 
 -- Martian
 
