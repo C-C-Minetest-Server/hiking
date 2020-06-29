@@ -302,6 +302,14 @@ for _, colour in pairs(hiking.colours) do
 	})
 end
 
+local hiking_directions = {
+	[0] = {x=0, y=-1, z=0},
+	[1] = {x=0, y=1, z=0},
+	[2] = {x=-1, y=0, z=0},
+	[3] = {x=1, y=0, z=0},
+	[4] = {x=0, y=0, z=-1},
+	[5] = {x=0, y=0, z=1},
+}
 local old_is_protected = minetest.is_protected
 
 minetest.is_protected = function(pos, pname)
@@ -317,30 +325,12 @@ minetest.is_protected = function(pos, pname)
 	if minetest.get_item_group(node.name, "hiking") > 0 then
 		return true
 	end
-
-	node = minetest.get_node({x = pos.x, y = pos.y-1, z = pos.z})
-	if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == 0 then
-		return true
-	end
-	node = minetest.get_node({x = pos.x, y = pos.y+1, z = pos.z})
-	if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == 1 then
-		return true
-	end
-	node = minetest.get_node({x = pos.x-1, y = pos.y, z = pos.z})
-	if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == 2 then
-		return true
-	end
-	node = minetest.get_node({x = pos.x+1, y = pos.y, z = pos.z})
-	if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == 3 then
-		return true
-	end
-	node = minetest.get_node({x = pos.x, y = pos.y, z = pos.z-1})
-	if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == 4 then
-		return true
-	end
-	node = minetest.get_node({x = pos.x, y = pos.y, z = pos.z+1})
-	if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == 5 then
-		return true
+	
+	for p2, dir in pairs(hiking_directions) do
+		node = minetest.get_node(vector.add(pos, dir))
+		if minetest.get_item_group(node.name, "hiking") > 0 and node.param2 == p2 then
+			return true
+		end
 	end
 	
 	return false
