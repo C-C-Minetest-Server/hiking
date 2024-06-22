@@ -48,7 +48,7 @@ hiking.basic_properties = {
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", "field[text;;${text}]")
-		meta:set_string("infotext", "\"\"")
+		meta:set_string("infotext", "")
 	end,
 	on_receive_fields = function(pos, formname, fields, sender)
 		if minetest.is_protected(pos, sender:get_player_name()) then
@@ -58,9 +58,9 @@ hiking.basic_properties = {
 		local meta = minetest.get_meta(pos)
 		if not fields.text then return end
 		minetest.log("action", (sender:get_player_name() or "").." wrote \""..fields.text..
-				"\" to sign at "..minetest.pos_to_string(pos))
+				"\" to hiking sign at "..minetest.pos_to_string(pos))
 		meta:set_string("text", fields.text)
-		meta:set_string("infotext", '"'..fields.text..'"')
+		meta:set_string("infotext", fields.text)
 	end,
 }
 
