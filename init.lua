@@ -98,7 +98,8 @@ function hiking.register_sign(colour, style, direction)
 		tiles = {inv},
 		inventory_image = inv,
 		wield_image = inv,
-		groups = my_groups
+		groups = my_groups,
+		use_texture_alpha = "blend",
 	}))
 end
 
