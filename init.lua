@@ -2,16 +2,16 @@
 
 hiking = {}
 
-hiking.base_material = "dye:white"
+hiking.base_material = xcompat.materials.dye_white
 
 --You can add another colours here.
 hiking.colours = {
-	{name = "red", colour = "FF0000", material = "dye:red"},
-	{name = "blue", colour = "0000FF", material = "dye:blue"},
-	{name = "green", colour = "00C000", material = "dye:green"},
-	{name = "yellow", colour = "FFFF00", material = "dye:yellow"},
+	{name = "red", colour = "FF0000", material = xcompat.materials.dye_red},
+	{name = "blue", colour = "0000FF", material = xcompat.materials.dye_blue},
+	{name = "green", colour = "00C000", material = xcompat.materials.dye_green},
+	{name = "yellow", colour = "FFFF00", material = xcompat.materials.dye_yellow},
 	--Uncomment this line to add Polish black signs
-	--{name = "black", colour = "000000", material = "dye:black"}
+	--{name = "black", colour = "000000", material = xcompat.materials.dye_black}
 }
 
 ------------------------------------------------------------------------------------
