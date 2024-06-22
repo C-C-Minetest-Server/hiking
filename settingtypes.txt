@@ -1,0 +1,1 @@
+hiking.protect_signs (Protect hiking signs and surroundings) bool true

@@ -16,11 +16,6 @@ hiking.colours = {
 
 ------------------------------------------------------------------------------------
 
-minetest.register_privilege("hiking", {
-	description = "Allows player to place and remove hiking signs and nodes right next to hiking signs.",
-	give_to_singleplayer = true,
-});
-
 hiking.sign_box = {
 	type = "wallmounted",
 	wall_top    = {-0.4375, 0.4375, -0.3125, 0.4375, 0.5, 0.3125},
@@ -40,15 +35,15 @@ hiking.basic_properties = {
 	legacy_wallmounted = true,
 	on_place = function(itemstack, placer, pointed_thing)
 		local name = placer:get_player_name()
-		if not name then
-			return
+		if minetest.settings:get_bool("hiking.protect_signs", true) then
+			local privs = minetest.get_player_privs(name)
+			if not (privs.protection_bypass or privs.hiking) then
+				minetest.chat_send_player(name, "Missing privilege: hiking")
+				return itemstack
+			end
 		end
-		if minetest.check_player_privs(name, {protection_bypass = true}) or minetest.check_player_privs(name, {hiking = true}) then
-			return minetest.item_place(itemstack, placer, pointed_thing)
-		else
-			minetest.chat_send_player(name, "Missing privilege: hiking")
-			return itemstack
-		end
+
+		return minetest.item_place(itemstack, placer, pointed_thing)
 	end,
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
@@ -302,6 +297,11 @@ for _, colour in pairs(hiking.colours) do
 	})
 end
 
+minetest.register_privilege("hiking", {
+	description = "Allows player to place and remove hiking signs and nodes right next to hiking signs.",
+	give_to_singleplayer = true,
+});
+
 local hiking_directions = {
 	[0] = {x=0, y=-1, z=0},
 	[1] = {x=0, y=1, z=0},
@@ -315,6 +315,10 @@ local old_is_protected = minetest.is_protected
 minetest.is_protected = function(pos, pname)
 	if old_is_protected(pos, pname) then
 		return true
+	end
+
+	if not minetest.settings:get_bool("hiking.protect_signs", true) then
+		return false
 	end
 	
 	if minetest.check_player_privs(pname, {protection_bypass = true}) or minetest.check_player_privs(pname, {hiking = true}) then
